@@ -1,2 +1,0 @@
-PORT = 5000
-MONGO_URI = mongodb+srv://cms_admin:SuMaibVgv6lRrC2P@cluster0.ub4ex.mongodb.net/myFirstDatabase?retryWrites=true&w=majority

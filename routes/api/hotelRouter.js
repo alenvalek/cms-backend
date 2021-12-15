@@ -1,6 +1,5 @@
 const express = require("express");
-const mongoose = require("mongoose");
-const Hotel = require("../../../models/Hotel.js");
+const Hotel = require("../../models/Hotel.js");
 
 const hotelRouter = express.Router();
 
