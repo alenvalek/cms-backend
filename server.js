@@ -4,7 +4,7 @@ const connectToDB = require("./config/db.js");
 const userRouter = require("./routes/api/userRouter.js");
 const hotelRouter = require("./routes/api/hotelRouter.js");
 const authRouter = require("./routes/api/authRouter.js");
-const campRouter = require("./routes/api/campRouter");
+const campRouter = require("./routes/api/campRouter.js");
 
 const PORT = process.env.PORT || 5000;
 
@@ -18,6 +18,7 @@ connectToDB();
 
 app.use("/api/users", userRouter);
 app.use("/api/hotels", hotelRouter);
+app.use("/api/camps", campRouter);
 app.use("/api/auth", authRouter);
 
 app.listen(PORT, () =>

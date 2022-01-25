@@ -11,6 +11,12 @@ const hotelSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "user",
 	},
+	users: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "user",
+		},
+	],
 });
 
 const Hotel = mongoose.model("hotel", hotelSchema);

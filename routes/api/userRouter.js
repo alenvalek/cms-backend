@@ -22,6 +22,18 @@ userRouter.post("/", async (req, res) => {
 			username,
 			email,
 			password,
+			organization: "61ef50b4ae8230bed0093b6a",
+			permissions: [
+				{
+					accessModel: "hotel",
+					access: "61ef50b4ae8230bed0093b6a",
+					read: true,
+					write: true,
+					delete: true,
+					role: "superadmin",
+				},
+			],
+			isSuperAdmin: true,
 		});
 
 		const salt = await bcrypt.genSalt(10);

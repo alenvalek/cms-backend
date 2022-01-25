@@ -19,8 +19,13 @@ authRouter.get("/", auth, async (req, res) => {
 	try {
 		const user = await User.findById(req.user.id)
 			.select("-password")
-			.populate("access");
-		console.log(user);
+			.populate({
+				path: "permissions",
+				populate: {
+					path: "access",
+				},
+			});
+
 		res.json({ user });
 	} catch (error) {
 		console.log(error.message);
