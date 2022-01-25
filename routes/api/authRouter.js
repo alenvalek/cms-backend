@@ -17,12 +17,11 @@ const authRouter = express.Router();
 
 authRouter.get("/", auth, async (req, res) => {
 	try {
-		const user = await User.findById(req.user.id).select("-password");
-
-		// TODO: Dodati role model i uhvatiti role iz user modela te ga poslati kroz
-		// ovaj poziv
-
-		res.json({ user, role: "admin" });
+		const user = await User.findById(req.user.id)
+			.select("-password")
+			.populate("access");
+		console.log(user);
+		res.json({ user });
 	} catch (error) {
 		console.log(error.message);
 		res.status(500).json({ error: "Server Error" });
@@ -35,7 +34,6 @@ authRouter.get("/", auth, async (req, res) => {
 
 authRouter.post("/", async (req, res) => {
 	const { email, password } = req.body;
-
 	if (!email || !password)
 		return res
 			.status(400)
@@ -43,6 +41,7 @@ authRouter.post("/", async (req, res) => {
 
 	try {
 		let user = await User.findOne({ email });
+
 		if (!user) return res.status(400).json({ error: "Invalid credentials" });
 
 		const isMatch = await bcrypt.compare(password, user.password);

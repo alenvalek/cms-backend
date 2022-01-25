@@ -4,6 +4,7 @@ const connectToDB = require("./config/db.js");
 const userRouter = require("./routes/api/userRouter.js");
 const hotelRouter = require("./routes/api/hotelRouter.js");
 const authRouter = require("./routes/api/authRouter.js");
+const campRouter = require("./routes/api/campRouter");
 
 const PORT = process.env.PORT || 5000;
 
@@ -14,12 +15,6 @@ app.use(cors());
 connectToDB();
 
 // define routes
-app.get("/", (req, res) => {
-	res.send({
-		ime: "alen",
-		prezime: "valek",
-	});
-});
 
 app.use("/api/users", userRouter);
 app.use("/api/hotels", hotelRouter);
