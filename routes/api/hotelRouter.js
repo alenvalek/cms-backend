@@ -20,7 +20,7 @@ hotelRouter.get("/:hotel_id", async (req, res) => {
 		}
 
 		// provjeri postoji li hotel s tim ID-em
-		const hotel = await Hotel.find({ _id: hotel_id });
+		const hotel = await Hotel.findOne({ _id: hotel_id });
 
 		// ako ne postoji vrati error
 		if (!hotel) {
