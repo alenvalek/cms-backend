@@ -19,7 +19,7 @@ campRouter.get("/:camp_id", async (req, res) => {
 		}
 
 		// provjeri postoji li kamp s tim ID-em
-		const camp = await Camp.find({ _id: camp_id });
+		const camp = await Camp.findOne({ _id: camp_id });
 
 		// ako ne postoji vrati error
 		if (!camp) {
