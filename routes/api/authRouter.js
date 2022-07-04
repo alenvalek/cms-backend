@@ -1,5 +1,8 @@
 const express = require("express");
 const User = require("../../models/User");
+const Hotel = require("../../models/Hotel.js");
+const Camp = require("../../models/Camp.js");
+const Object = require("../../models/Object.js");
 
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -17,16 +20,30 @@ const authRouter = express.Router();
 
 authRouter.get("/", auth, async (req, res) => {
 	try {
-		const user = await User.findById(req.user.id)
-			.select("-password")
-			.populate({
-				path: "permissions",
-				populate: {
-					path: "access",
-				},
-			});
+		const user = await User.findById(req.user.id).select("-password");
 
-		res.json({ user });
+		let hotels = [];
+		let camps = [];
+		let objects = [];
+		let users = [];
+
+		if (user.isSuperAdmin) {
+			hotels = await Hotel.find({}).populate("permissions.user");
+			camps = await Camp.find({}).populate("permissions.user");
+			objects = await Object.find({});
+		} else {
+			hotels = await Hotel.find({ "permissions.user": req.user.id });
+			camps = await Camp.find({ "permissions.user": req.user.id });
+			objects = await Object.find({ "permissions.user": req.user.id });
+		}
+
+		const userWorkspaces = {
+			hotels,
+			camps,
+			objects,
+		};
+
+		res.json({ user, userWorkspaces });
 	} catch (error) {
 		console.log(error.message);
 		res.status(500).json({ error: "Server Error" });

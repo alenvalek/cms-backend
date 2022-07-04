@@ -23,23 +23,6 @@ const userSchema = new mongoose.Schema({
 		ref: "hotel",
 		required: true,
 	},
-	permissions: [
-		{
-			accessModel: { type: "String", enum: ["hotel", "camp"], required: true },
-			access: {
-				type: mongoose.Schema.Types.ObjectId,
-				refPath: "permissions.accessModel",
-			},
-			read: { type: Boolean, default: true, required: true },
-			write: { type: Boolean, default: false, required: true },
-			delete: { type: Boolean, default: false, required: true },
-			role: {
-				type: String,
-				enum: ["superadmin", "admin", "operater", "vlasnik", "user"],
-				default: "user",
-			},
-		},
-	],
 	isSuperAdmin: {
 		type: Boolean,
 		default: false,
