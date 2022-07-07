@@ -6,37 +6,29 @@ const auth = require("../../middleware/auth");
 const objectRouter = express.Router();
 
 objectRouter.get("/", [auth], async (req, res) => {
-	const newObject = new Object({
-		naziv: "Majina kuČa",
-		povrsina: 30,
-		tip: "deluxe",
-		dimenzije: "3*10*3",
-		opis: "",
-		camp: "61ef5f759c1122f180a51285",
-		hotel: "61ef50b4ae8230bed0093b6a",
-		permissions: [
-			{
-				user: "61ef5b68d4bd24dcc35a73a6",
-				role: "superadmin",
-				read: true,
-				write: true,
-				update: true,
-				delete: true,
-			},
-		],
-	});
+	const { naziv, povrsina, tip, dimenzije, opis, camp, hotel } = req.body;
 
-	await newObject.save();
-	res.send(newObject);
+	let newObject = {};
+
+	newObject.naziv = naziv;
+	newObject.povrsina = povrsina;
+	newObject.tip = povrsina;
+	newObject.dimenzije = dimenzije;
+	newObject.opis = opis ? opis : "";
+	newObject.camp = camp;
+	newObject.hotel = hotel;
+
+	try {
+		const newObj = new Object(newObject);
+
+		newObj.save();
+	} catch (error) {
+		console.log(error);
+	}
+
+	await newObj.save();
+	res.send(newObj);
 });
-
-/*
-naziv: "Majina kuČa",
-		povrsina: 30,
-		tip: "deluxe",
-		dimenzije: "3*10*3",
-		opis: "",
-*/
 
 objectRouter.delete("/:id", [auth], async (req, res) => {
 	const { id } = req.params;
