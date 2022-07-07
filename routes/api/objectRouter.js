@@ -61,7 +61,7 @@ objectRouter.patch("/:id", [auth], async (req, res) => {
 		}
 		if (name) objExists.naziv = name;
 		if (povrsina) objExists.povrsina = povrsina;
-		if (tip) objExists.tip = SchemaTypeOptions;
+		if (tip) objExists.tip = tip;
 		if (dimenzije) objExists.dimenzije = dimenzije;
 		if (opis) objExists.opis = opis;
 

@@ -1,4 +1,5 @@
 const Camp = require("../../models/Camp");
+const Object = require("../../models/Object");
 const express = require("express");
 const User = require("../../models/User");
 const campRouter = express.Router();
