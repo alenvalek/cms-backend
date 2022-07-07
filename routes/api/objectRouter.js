@@ -1,11 +1,10 @@
 const express = require("express");
-const { SchemaTypeOptions } = require("mongoose");
 const Object = require("../../models/Object.js");
 const auth = require("../../middleware/auth");
 
 const objectRouter = express.Router();
 
-objectRouter.get("/", [auth], async (req, res) => {
+objectRouter.post("/", [auth], async (req, res) => {
 	const { naziv, povrsina, tip, dimenzije, opis, camp, hotel } = req.body;
 
 	let newObject = {};
