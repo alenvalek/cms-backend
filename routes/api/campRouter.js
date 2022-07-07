@@ -2,14 +2,15 @@ const Camp = require("../../models/Camp");
 const express = require("express");
 const User = require("../../models/User");
 const campRouter = express.Router();
+const auth = require("../../middleware/auth");
 
-campRouter.get("/", async (req, res) => {
+campRouter.get("/", [auth], async (req, res) => {
 	const allCamps = await Camp.find({});
 
 	res.send(allCamps);
 });
 
-campRouter.get("/:camp_id", async (req, res) => {
+campRouter.get("/:camp_id", [auth], async (req, res) => {
 	const { camp_id } = req.params;
 
 	try {
@@ -33,7 +34,7 @@ campRouter.get("/:camp_id", async (req, res) => {
 	}
 });
 
-campRouter.put("/set_owner/:object_id/:user_id", async (req, res) => {
+campRouter.put("/set_owner/:object_id/:user_id", [auth], async (req, res) => {
 	const { user_id, object_id } = req.params;
 
 	// provjera zadovoljavaju li ID-evi pravila za ObjectId
@@ -70,7 +71,7 @@ campRouter.put("/set_owner/:object_id/:user_id", async (req, res) => {
 	}
 });
 
-campRouter.post("/", async (req, res) => {
+campRouter.post("/", [auth], async (req, res) => {
 	const { name, hotel } = req.body;
 	try {
 		const object = new Camp({ name, hotel });
@@ -80,6 +81,39 @@ campRouter.post("/", async (req, res) => {
 	} catch (error) {
 		console.log(error.message);
 		res.status(500).send({ error: "Server Error." });
+	}
+});
+
+campRouter.delete("/:id", [auth], async (req, res) => {
+	const { id } = req.params;
+
+	try {
+		await Camp.deleteOne({ _id: id });
+		await Object.deleteMany({ camp: id });
+		res.status(200).json({ msg: "Deleted successfully" });
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ msg: "Server Error!" });
+	}
+});
+
+campRouter.patch("/:id", [auth], async (req, res) => {
+	const { id } = req.params;
+	const { name } = req.body;
+
+	try {
+		let campExists = await Camp.findOne({ _id: id });
+
+		if (!campExists) {
+			res.status(400).json({ msg: "Camp does not exist." });
+		}
+
+		campExists.name = name;
+		await campExists.save();
+		res.send(campExists);
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ msg: "Server Error!" });
 	}
 });
 

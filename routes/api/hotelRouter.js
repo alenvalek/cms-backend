@@ -1,16 +1,53 @@
 const express = require("express");
 const Hotel = require("../../models/Hotel.js");
+const Camp = require("../../models/Camp.js");
+const Object = require("../../models/Object.js");
 const User = require("../../models/User");
+const auth = require("../../middleware/auth");
 
 const hotelRouter = express.Router();
 
-hotelRouter.get("/", async (req, res) => {
+hotelRouter.get("/", [auth], async (req, res) => {
 	const allHotels = await Hotel.find({});
 
 	res.send(allHotels);
 });
 
-hotelRouter.get("/:hotel_id", async (req, res) => {
+hotelRouter.delete("/:id", [auth], async (req, res) => {
+	const { id } = req.params;
+
+	try {
+		await Hotel.deleteOne({ _id: id });
+		await Camp.deleteMany({ hotel: id });
+		await Object.deleteMany({ hotel: id });
+		res.status(200).json({ msg: "Deleted successfully" });
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ msg: "Server Error!" });
+	}
+});
+
+hotelRouter.patch("/:id", [auth], async (req, res) => {
+	const { id } = req.params;
+	const { name } = req.body;
+
+	try {
+		let hotelExists = await Hotel.findOne({ _id: id });
+
+		if (!hotelExists) {
+			res.status(400).json({ msg: "Hotel does not exist." });
+		}
+
+		hotelExists.name = name;
+		await hotelExists.save();
+		res.send(hotelExists);
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ msg: "Server Error!" });
+	}
+});
+
+hotelRouter.get("/:hotel_id", [auth], async (req, res) => {
 	const { hotel_id } = req.params;
 
 	try {
@@ -34,7 +71,7 @@ hotelRouter.get("/:hotel_id", async (req, res) => {
 	}
 });
 
-hotelRouter.put("/set_owner/:object_id/:user_id", async (req, res) => {
+hotelRouter.put("/set_owner/:object_id/:user_id", [auth], async (req, res) => {
 	const { user_id, object_id } = req.params;
 
 	// provjera zadovoljavaju li ID-evi pravila za ObjectId
@@ -71,7 +108,7 @@ hotelRouter.put("/set_owner/:object_id/:user_id", async (req, res) => {
 	}
 });
 
-hotelRouter.post("/", async (req, res) => {
+hotelRouter.post("/", [auth], async (req, res) => {
 	const { name } = req.body;
 	try {
 		const object = new Hotel({ name });
