@@ -56,7 +56,8 @@ objectRouter.delete("/:id", [auth], async (req, res) => {
 
 objectRouter.patch("/:id", [auth], async (req, res) => {
 	const { id } = req.params;
-	const { name, povrsina, tip, dimenzije, opis, content } = req.body;
+	const { name, povrsina, tip, dimenzije, opis, content, filterContent } =
+		req.body;
 
 	try {
 		let objExists = await Object.findOne({ _id: id });
@@ -73,7 +74,11 @@ objectRouter.patch("/:id", [auth], async (req, res) => {
 				.toString()
 				.split(",")
 				.map((act) => act.trim());
-
+		if (filterContent) {
+			objExists.content = objExists.content.filter(
+				(cont) => cont !== filterContent
+			);
+		}
 		await objExists.save();
 		res.send(objExists);
 	} catch (error) {
