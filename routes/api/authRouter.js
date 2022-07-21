@@ -25,16 +25,15 @@ authRouter.get("/", auth, async (req, res) => {
 		let hotels = [];
 		let camps = [];
 		let objects = [];
-		let users = [];
 
 		if (user.isSuperAdmin) {
-			hotels = await Hotel.find({}).populate("permissions.user");
-			camps = await Camp.find({}).populate("permissions.user");
+			hotels = await Hotel.find({});
+			camps = await Camp.find({});
 			objects = await Object.find({});
 		} else {
-			hotels = await Hotel.find({ "permissions.user": req.user.id });
-			camps = await Camp.find({ "permissions.user": req.user.id });
-			objects = await Object.find({ "permissions.user": req.user.id });
+			hotels = await Hotel.find({});
+			camps = await Camp.find({});
+			objects = await Object.find({});
 		}
 
 		const userWorkspaces = {

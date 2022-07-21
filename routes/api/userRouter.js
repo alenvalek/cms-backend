@@ -2,50 +2,24 @@ const express = require("express");
 const User = require("../../models/User.js");
 
 const bcrypt = require("bcryptjs");
+const auth = require("../../middleware/auth.js");
 
 const userRouter = express.Router();
 
-userRouter.get("/", async (req, res) => {
-	const allUsers = await User.find({});
+// get all org-users
+userRouter.get("/:hotel_id", [auth], async (req, res) => {
+	const { hotel_id } = req.params;
+	const allUsers = await User.find({ organization: hotel_id });
 
 	res.send(allUsers);
 });
 
-userRouter.post("/", async (req, res) => {
-	const { username, email, password } = req.body;
-
+userRouter.delete("/:user_id", [auth], async (req, res) => {
+	const { user_id } = req.params;
 	try {
-		let user = await User.findOne({ email });
-
-		if (user) return res.status(400).json({ error: "Email already in use." });
-
-		user = new User({
-			username,
-			email,
-			password,
-			organization: "61ef50b4ae8230bed0093b6a",
-			permissions: [
-				{
-					accessModel: "hotel",
-					access: "61ef50b4ae8230bed0093b6a",
-					read: true,
-					write: true,
-					delete: true,
-					role: "superadmin",
-				},
-			],
-			isSuperAdmin: true,
-		});
-
-		const salt = await bcrypt.genSalt(10);
-		user.password = await bcrypt.hash(password, salt);
-
-		const newUser = await user.save();
-
-		res.send(newUser);
+		await User.deleteOne({ _id: user_id });
 	} catch (error) {
-		console.log(error.message);
-		res.status(500).send({ error: "Server Error." });
+		console.log(error);
 	}
 });
 
